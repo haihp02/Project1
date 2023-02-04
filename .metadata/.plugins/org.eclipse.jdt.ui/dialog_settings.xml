@@ -66,11 +66,12 @@
 	</section>
 	<section name="FatJarPackageWizard">
 		<item key="FatJarPackageWizardPage.ANTSCRIPT_SAVE" value="false"/>
-		<item key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION" value="C:\Users\Admin\OneDrive - Hanoi University of Science and Technology\Project 1\FX project"/>
+		<item key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION" value="C:\Users\Admin\OneDrive - Hanoi University of Science and Technology\Project 1\FX project.xml"/>
 		<item key="FatJarPackageWizardPage.LIBRARY_HANDLING" value="3"/>
 		<item key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME" value="Main - project1"/>
-		<item key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION" value="C:\Users\Admin\App\converter.jar"/>
+		<item key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION" value="C:\Users\Admin\OneDrive - Hanoi University of Science and Technology\Project 1\test\converter.jar"/>
 		<list key="FatJarPackageWizardPage.DESTINATION_NAMES_ID">
+			<item value="C:\Users\Admin\OneDrive - Hanoi University of Science and Technology\Project 1\test\converter.jar"/>
 			<item value="C:\Users\Admin\App\converter.jar"/>
 			<item value="C:\Users\Admin\OneDrive - Hanoi University of Science and Technology\Project 1\app\converter.jar"/>
 			<item value="C:\Users\Admin\OneDrive - Hanoi University of Science and Technology\Project 1\converter1.jar"/>
