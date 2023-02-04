@@ -1,0 +1,103 @@
+package algo;
+
+import java.util.Stack;
+
+public class Calculator {
+    
+    public static Double binaryCal(double operand1, double operand2, String operator) {
+        if(operator.equals("+")) return operand1 + operand2;
+        else if(operator.equals("-")) return operand1 - operand2;
+        else if(operator.equals("*")) return operand1 * operand2;
+        else if(operator.equals("/")) return operand1 / operand2;
+        else return null;
+    }  
+
+    public static String calPostfix(String postfixExpression) {
+        if(postfixExpression == null) return null;
+        
+        Stack<String> stack = new Stack<String>();
+        String[] tokens = postfixExpression.trim().split(" ");
+        
+        for(String token : tokens) {
+            if(Check.isOperator(token)) {
+                double operand2 = Double.parseDouble(stack.pop());
+                double operand1 = Double.parseDouble(stack.pop());
+                stack.push(Double.toString(binaryCal(operand1, operand2, token)));
+            }
+            else if(Check.isOperand(token)) stack.push(token);
+            else return null;
+        }
+        if(stack.size() == 1) return stack.pop();
+        else return null;
+    }
+
+    public static String calPrefix(String prefixExpression) {
+        if(prefixExpression == null) return null;
+        
+        Stack<String> stack = new Stack<String>();
+        String[] tokens = prefixExpression.trim().split(" ");
+        
+        for(int i = tokens.length-1; i >= 0; i--) {
+            if(Check.isOperator(tokens[i])) {
+                double operand1 = Double.parseDouble(stack.pop());
+                double operand2 = Double.parseDouble(stack.pop()); 
+                stack.push(Double.toString(binaryCal(operand1, operand2, tokens[i])));
+            }
+            else if(Check.isOperand(tokens[i])) stack.push(tokens[i]);
+            else return null;
+        }
+        if(stack.size() == 1) return stack.pop();
+        else return null;
+    }
+    
+    public static String calInfix1(String infixExpression) {
+        if(infixExpression == null) return null;
+        
+        String[] tokens = Converter.formatInfixExpression(infixExpression).split(" ");
+        Stack<String> operandStack = new Stack<String>();
+        Stack<String> operatorStack = new Stack<String>();
+        
+        for(String token : tokens) {
+            System.out.println(token);
+            if(Check.isOperand(token)) operandStack.push(token);
+            else if(token.equals("(")) operatorStack.push(token);
+            else if(Check.isOperator(token)) {
+                if(!operatorStack.isEmpty() && Check.isOperator(operatorStack.peek())
+                      && Converter.operatorPrecedence(token) <=  Converter.operatorPrecedence(operatorStack.peek())) {
+                    double operand2 = Double.parseDouble(operandStack.pop());
+                    double operand1 = Double.parseDouble(operandStack.pop()); 
+                    operandStack.push(Double.toString(binaryCal(operand1, operand2, operatorStack.pop())));
+                }
+                operatorStack.push(token);
+            }
+            else if(token.equals(")")) {
+                while(!operatorStack.peek().equals("(")) {
+                    double operand2 = Double.parseDouble(operandStack.pop());
+                    double operand1 = Double.parseDouble(operandStack.pop()); 
+                    operandStack.push(Double.toString(binaryCal(operand1, operand2, operatorStack.pop())));
+                }
+                operatorStack.pop();
+            }
+        }
+        while(!operatorStack.isEmpty()) {
+            double operand1 = Double.parseDouble(operandStack.pop());
+            double operand2 = Double.parseDouble(operandStack.pop()); 
+            operandStack.push(Double.toString(binaryCal(operand1, operand2, operatorStack.pop())));
+        }
+        System.out.println(operandStack.size());
+        if(operandStack.size() == 1) return operandStack.pop();
+        else return null;
+    }
+    
+    
+    public static String calInfix2(String infixExpression) {
+        String result = null;
+        String resultFromPost = calPostfix(Converter.infixToPostfix(infixExpression));
+        String resultFromPre = calPrefix(Converter.infixToPrefix(infixExpression));
+        if(resultFromPost == null || resultFromPre == null) return null;
+        else if(resultFromPost.equals(resultFromPre)) result = resultFromPost;
+        return result;
+    }
+
+}
+

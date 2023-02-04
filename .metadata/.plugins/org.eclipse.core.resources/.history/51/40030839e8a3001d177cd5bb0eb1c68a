@@ -1,0 +1,116 @@
+package controller;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import algo.Evaluator;
+import algo.Converter;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+import parser.ExpressionChecker;
+
+public class EvaluatorController implements Initializable{
+
+    @FXML
+    TextField expressionField, resultField;
+    
+    @FXML
+    RadioButton infixButton, postfixButton, prefixButton;
+    
+    @FXML
+    Button backToMainButton;
+    
+    public void evaluate(ActionEvent event) {
+        String inputExpression = expressionField.getText();
+        ExpressionChecker checker = new ExpressionChecker();
+        String result = null;
+        try {
+            if(infixButton.isSelected()) {
+                if(!checker.check(inputExpression)) result = null;
+                else result = Evaluator.calInfix1(inputExpression);
+            } else if(postfixButton.isSelected()) {
+                if(!checker.check(Converter.postfixToInfix(inputExpression))) result = null;
+                else result = Evaluator.calPostfix(inputExpression);
+            } else if(prefixButton.isSelected()) {
+                if(!checker.check(Converter.prefixToInfix(inputExpression))) result = null;
+                else result = Evaluator.calPrefix(inputExpression);
+            } else {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setHeaderText("");
+                alert.setTitle("");
+                alert.setContentText("Chưa chọn định dạng cho biểu thức cần đánh giá!");
+                alert.show();
+                return;
+            };
+            
+            if(result == null) {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setHeaderText("");
+                alert.setTitle("");
+                alert.setContentText("Biểu thức sai định dạng!");
+                alert.show();
+            }
+            else if(result == "Infinity" || result == "-Infinity" || result == "NaN") {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setHeaderText("");
+                alert.setTitle("");
+                alert.setContentText("Phép tính không hợp lệ!");
+                alert.show();
+            }
+            else {
+                System.out.println(result);
+                if(result.contains(".")) {
+                    if(!result.contains("E") && Double.parseDouble(result) % 1 == 0) result = result.substring(0, result.indexOf('.'));
+                    else if(!result.contains("E")) result = String.format("%.6f", Double.parseDouble(result));
+                }
+                resultField.setText(result);
+            }
+        } catch(NumberFormatException e) {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setHeaderText("");
+            alert.setTitle("");
+            alert.setContentText("Vui lòng chỉ nhập các chữ số.");
+            alert.show();
+            return;
+        } catch(Exception e) {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setHeaderText("");
+            alert.setTitle("");
+            alert.setContentText("Biểu thức sai định dạng!");
+            alert.show();
+        }
+        
+    }
+    
+    public void backToMain(ActionEvent event) throws IOException {
+        Stage stage = (Stage) (((Node)event.getSource()).getScene().getWindow());
+        Parent root = FXMLLoader.load(getClass().getResource("/view/MainScreen.fxml"));
+        Scene scene = new Scene(root,600,400);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        // TODO Auto-generated method stub
+        Image backImage = new Image(getClass().getResourceAsStream("/view/backbutton.png"));
+        ImageView backImageView = new ImageView(backImage);
+        backImageView.setFitHeight(20);
+        backImageView.setFitWidth(20);
+        backToMainButton.setGraphic(backImageView);
+    }
+}

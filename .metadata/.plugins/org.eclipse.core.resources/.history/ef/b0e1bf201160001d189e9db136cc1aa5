@@ -1,0 +1,152 @@
+package controller;
+
+import java.util.ArrayList;
+
+import algo.Check;
+import algo.Converter;
+import algo.StackNode;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+
+public class StackVisualizerController {
+    
+    @FXML
+    private AnchorPane stackTab, treeTab;
+    
+    @FXML
+    private Pane inputPane, stackPane, outputPane;
+    
+    @FXML
+    private RadioButton prefixButton, postfixButton;
+    
+    private String[] infixTokens;
+    private ArrayList<StackNode> stackNodeArray = new ArrayList<>();
+    
+    private int stackPaneX = 0;
+    private int outputPaneX = 0;
+    private int radius = 15;
+
+    public void setInfixTokens(String[] infixTokens) {
+        this.infixTokens = infixTokens;
+    }
+    
+    public void loadInfixTokensToPane(ActionEvent event) {
+        stop(event);
+        if(! (prefixButton.isSelected() || postfixButton.isSelected())) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Please choose result expression type");
+            alert.show();
+            return;
+        } else {
+            prefixButton.setDisable(true);
+            postfixButton.setDisable(true);
+        }
+        int x = radius;
+        for(String token : infixTokens) {
+            StackNode node;
+            inputPane.getChildren().add(new StackNode(token, x, 0, radius));
+            x += 2*radius;
+        }
+    }
+    
+    public void stop(ActionEvent event) {
+        inputPane.getChildren().clear();
+        stackPane.getChildren().clear();
+        outputPane.getChildren().clear();
+        infixTokens = null;
+        prefixButton.setDisable(false);
+        postfixButton.setDisable(false);
+        prefixButton.setSelected(false);
+        postfixButton.setSelected(false);
+    }
+    
+    public void stepForward(ActionEvent event) {
+        if(prefixButton.isSelected()) stepForwardPrefix();
+        else if(postfixButton.isSelected()) stepForwardPostfix();
+    }
+    
+    public void stepForwardPrefix() {
+        
+    }
+    
+    public void stepForwardPostfix() {
+        ObservableList<Node> inputList = inputPane.getChildren();
+        ObservableList<Node> stackList = stackPane.getChildren();
+        ObservableList<Node> outputList = outputPane.getChildren();
+        
+        if(!inputPane.getChildren().isEmpty()) {
+            StackNode inputNode = (StackNode) inputPane.getChildren().get(0);
+            if(Check.isOperand(inputNode.getText())) {
+                inputList.remove(inputNode);
+                inputNode.setLayoutX(outputPaneX);
+                outputList.add(inputNode);
+                outputPaneX += 2*radius;
+            }
+            else if(inputNode.getText().equals("(")) {
+                inputList.remove(inputNode);
+                inputNode.setLayoutX(stackPaneX);
+                stackList.add(inputNode);
+                stackPaneX += 2*radius;
+            }
+            else if(inputNode.getText().equals(")")) {
+                StackNode stackNode = (StackNode)stackList.get(stackList.size()-1);
+                if(!stackNode.getText().equals("(")) {
+                    stackList.remove(stackNode);
+                    stackPaneX -= 2*radius;
+                    stackNode.setLayoutX(outputPaneX);
+                    outputList.add(stackNode);
+                    outputPaneX += 2*radius;
+                }
+                else {
+                    inputList.remove(inputNode);
+                    stackList.remove(stackNode);
+                    stackPaneX -= 2*radius;
+                }
+            }
+            else if(Check.isOperator(inputNode.getText())) {
+                System.out.println("operand");
+                if(!stackList.isEmpty()) {
+                    StackNode stackNode = (StackNode)stackList.get(stackList.size()-1);
+                    if(Check.isOperator(stackNode.getText()) 
+                            && Converter.operatorPrecedence(stackNode.getText()) >= Converter.operatorPrecedence(inputNode.getText())) {
+                        stackList.remove(stackNode);
+                        stackPaneX -= 2*radius;
+                        stackNode.setLayoutX(outputPaneX);
+                        outputList.add(stackNode);
+                        outputPaneX += 2*radius;
+                    }
+                    else {
+                        inputPane.getChildren().remove(inputNode);
+                        inputNode.setLayoutX(stackPaneX);
+                        stackList.add(inputNode);
+                        stackPaneX += 2*radius;
+                    }
+                }
+                else {
+                    inputPane.getChildren().remove(inputNode);
+                    inputNode.setLayoutX(stackPaneX);
+                    stackList.add(inputNode);
+                    stackPaneX += 2*radius;
+                }
+            }
+        }
+        else {
+            if(!stackList.isEmpty()) {
+                StackNode stackNode = (StackNode)stackList.get(stackList.size()-1);
+                stackList.remove(stackNode);
+                stackNode.setLayoutX(outputPaneX);
+                outputList.add(stackNode);
+                outputPaneX += 2*radius;
+            }
+            else return;
+        }
+    }
+}

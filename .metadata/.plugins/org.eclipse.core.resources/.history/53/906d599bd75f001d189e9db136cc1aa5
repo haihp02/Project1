@@ -1,0 +1,41 @@
+package algo;
+
+public class BinaryTreeNode {
+    private BinaryTreeNode leftChild = null;
+    private BinaryTreeNode rightChild = null;
+    private String value;
+
+    public BinaryTreeNode(String value, BinaryTreeNode leftChild, BinaryTreeNode rightChild) {
+        this.value = value;
+        this.leftChild = leftChild;
+        this.rightChild = rightChild;
+    }
+    
+    public boolean isLeaf() {
+        return this.leftChild == null && this.rightChild == null;
+    }
+
+    public BinaryTreeNode getLeftChild() {
+        return leftChild;
+    }
+
+    public void setLeftChild(BinaryTreeNode leftChild) {
+        this.leftChild = leftChild;
+    }
+
+    public BinaryTreeNode getRightChild() {
+        return rightChild;
+    }
+
+    public void setRightChild(BinaryTreeNode rightChild) {
+        this.rightChild = rightChild;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    } 
+}

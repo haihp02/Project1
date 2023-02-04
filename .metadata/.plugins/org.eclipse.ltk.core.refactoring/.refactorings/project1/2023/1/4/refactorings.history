@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;algo.Calculator.calInfix(...)&apos; to &apos;calInfix2&apos;&#x0D;&#x0A;- Original project: &apos;project1&apos;&#x0D;&#x0A;- Original element: &apos;algo.Calculator.calInfix(...)&apos;&#x0D;&#x0A;- Renamed element: &apos;algo.Calculator.calInfix2(...)&apos;&#x0D;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;calInfix&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;algo{Calculator.java[Calculator~calInfix~QString;" name="calInfix2" references="true" stamp="1674890575058" version="1.0"/>
+</session>
